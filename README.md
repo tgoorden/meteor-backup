@@ -6,6 +6,8 @@ A simple (coffee)script to make backups of collections on your remote meteor ins
 It requires the 'nomnom' and 'underscore' npm libraries to be installed, as well as command-line coffeescript.
 
 Usage is simple:
-```backup.coffee [domain] [collection]...
+```
+backup.coffee [domain] [collection]...
+```
 
-This will create a json file with the name of your collection, using .
+This will create a json file for every collection(s) listed, using the mongoexport command.

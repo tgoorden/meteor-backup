@@ -7,9 +7,11 @@ A simple (coffee)script to make backups of collections on your remote meteor ins
 The backup script requires the 'nomnom' and 'underscore' npm libraries to be installed, as well as command-line coffeescript.
 
 Usage is simple:
-```backup.coffee [domain] [collection]...
+```
+backup.coffee [domain] [collection]...
+```
 
-This will create a json file with the name of your collection, using <collection>.json as the filename.
+This will create a json file with the name of your collection, using the mongoexport command. The results are saved in [collection].json files.
 
 It also includes a pretty cool script to convert the result to a CSV file. This script will "flatten" any subdocuments. So, objects like:
 ``` {"name":"Example","subdoc":{"amount":1,"description":"Foo"}}

@@ -18,9 +18,9 @@ will be converted into
 before being converted into a CSV line.
 
 Usage of the conversion script:
-```json2csv.coffee <input file.json>
+```json2csv.coffee [input file.json]
 
 You can write the result into a csv file as such:
-```json2csv.coffee <input file.json> | <output file.csv>
+```json2csv.coffee [input file.json] > [output file.csv]
 
 Caveat: I'm not sure what happens when you have subdocuments consisting of arrays. In any case, there is no obvious way to shoehorn this type of structure into a sensible csv file anyway.

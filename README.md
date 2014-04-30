@@ -50,11 +50,12 @@ This script will "flatten" any subdocuments. So, objects like:
 ```
 {"name":"Example","subdoc":{"amount":1,"description":"Foo"}}
 ```
-will be converted into
+will be converted into:
 ```
-{"name":"Example","subdoc_amount":1,"subdoc_description":"Foo"}}
+"name","subdoc_amount","subdoc_description"
+"Example","1","Foo"
 ```
-before being converted into a CSV line.
+before being converted into a CSV line. Yes, this works recursively and yes, content with the same key is gathered in the same column.
 
 Arrays inside the JSON files  are currently not supported.
 

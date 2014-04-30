@@ -1,6 +1,5 @@
 #!/usr/bin/env coffee
 
-
 exec = require('child_process').exec
 sys = require 'sys'
 _ = require 'underscore'
@@ -15,6 +14,20 @@ cdl = require('nomnom').script("backup").options
 		help: "Which collections to include"
 		list: true
 		required: true
+	dir:
+		abbr: 'd'
+		full: 'dir'
+		metavar: 'PATH'
+		help: "The directory where JSON files will be saved (please end with '/', defaults to current dir)"
+		default: './'
+	prefix:
+		full: "prefix"
+		help: "Prefix text to prepend to JSON filename (e.g. a date)"
+		default: ""
+	postfix:
+		full: "postfix"
+		help: "Postfix text to append to JSON filename (e.g. a date)"
+		default: ""
 
 options = cdl.parse()
 
@@ -23,7 +36,9 @@ exec "meteor mongo #{options.domain} --url", (error,stdout,stderr)->
 		console.log "Error getting domain URL:"
 		console.log stderr
 	if stdout
-		console.log "URL: #{stdout}"
+		# console.log "URL: #{stdout}"
+		# If you want to know what the next line is about,
+		# check the output of "meteor mongo <domain> --url"
 		url = stdout.split /:\/\/|:|@|\/|\n|\r/
 		protocol = url[0]
 		username = url[1]
@@ -32,7 +47,7 @@ exec "meteor mongo #{options.domain} --url", (error,stdout,stderr)->
 		port = url[4]
 		db = url[5]
 		_.each options.collections, (collection)->
-			exportCmd = "mongoexport -h #{host} --port #{port} -u #{username} -p #{password} -d #{db} -c #{collection} -o #{collection}.json"
+			exportCmd = "mongoexport -h #{host} --port #{port} -u #{username} -p #{password} -d #{db} -c #{collection} -o #{options.dir}#{options.prefix}#{collection}#{options.postfix}.json"
 			console.log exportCmd
 			exec exportCmd, (err,sout,serr)->
 				if sout

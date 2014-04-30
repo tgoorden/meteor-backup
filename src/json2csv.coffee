@@ -8,6 +8,10 @@ cdl = require('nomnom').script("json2csv").options
 		position: 0
 		help: "The JSON file to convert"
 		required: true
+	outputFile:
+		position: 1
+		help: "The name of the CSV output file (optional)"
+		required: false
 
 options = cdl.parse()
 
@@ -51,9 +55,15 @@ fs.readFile options.inputFile, {encoding:"UTF-8"}, (err,data)->
 				_.each _.keys(obj), (key)->
 					unless _.contains unique_keys, key
 						unique_keys.push key
+			# Create a write function to either the console
+			# or the outputFile (if provided)
+			write = console.log
+			if options.outputFile
+				write = (text)->
+					fs.appendFile options.outputFile, text + '\n', (err)-> throw err
 			# Print the whole shebang to the stdout in csv format
 			# First, the headers:
-			console.log _.map(unique_keys,(k)->"\"#{k}\"").join ","
+			write _.map(unique_keys,(k)->"\"#{k}\"").join ","
 			# And.. the contents
 			_.each flat, (obj)->
 				csv = []
@@ -64,5 +74,5 @@ fs.readFile options.inputFile, {encoding:"UTF-8"}, (err,data)->
 				padded = _.map csv,(v)->
 					escaped = v.replace /\"/g, "\"\""
 					return "\"#{escaped}\""
-				console.log padded.join ","
+				write padded.join ","
 

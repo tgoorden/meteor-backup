@@ -1,28 +1,50 @@
 meteor-backup
 =============
 
-A simple (coffee)script to make backups of collections on your remote meteor installation. Since the Meteor provided hosting rotates the password to your MongoDB every few minutes, this beats having to do really annoying copy-paste operations.
+Two simple scripts to make backups of collections on your remote meteor installation and to convert the result into csv. Since the Meteor provided hosting rotates the password to your MongoDB every few minutes, this beats having to do really annoying copy-paste operations.
 
+To install using npm:
+```sudo npm install -g meteor-db-utils
+(This is a global installation, which you probably want for a command line tool like this.)
 
-The backup script requires the 'nomnom' and 'underscore' npm libraries to be installed, as well as command-line coffeescript.
+To export/backup JSON files for collections on your production site:
 
-Usage is simple:
 ```
-backup.coffee [domain] [collection]...
+meteor-backup [domain] [collection...]
 ```
+e.g.
+```meteor-backup examples.meteor.com users
 
-This will create a json file with the name of your collection, using the mongoexport command. The results are saved in [collection].json files.
+You can list multiple collections, they will be exported to separate files.
 
-It also includes a pretty cool script to convert the result to a CSV file. This script will "flatten" any subdocuments. So, objects like:
+Options:
+```-d [dir]
+Specify the directory to save to.
+
+```--prefix [prefix]
+```--postfix [postfix]
+Append or prepend a string to your JSON filenames (the name of the collection is the base name). You can use this to datestamp your export for instance.
+
+
+Keep in mind:
+* mongoexport has to be available on your command line, this is not installed automatically
+* This has been tested with a Meteor 0.8.0 installation, it probably does not work with earlier (0.6.5) ones.
+
+It also includes a pretty cool script to convert the result to a CSV file.
+
+Usage of the conversion script:
+```meteor-json2csv <inputfile> [outputfile]
+
+Outputfile is optional, the script will write to the console if no outputfile is specified.
+
+This script will "flatten" any subdocuments. So, objects like:
 ``` {"name":"Example","subdoc":{"amount":1,"description":"Foo"}}
 will be converted into
 ``` {"name":"Example","subdoc_amount":1,"subdoc_description":"Foo"}}
 before being converted into a CSV line.
 
-Usage of the conversion script:
-```json2csv.coffee [input file.json]
+Arrays inside the JSON files  are currently not supported.
 
-You can write the result into a csv file as such:
-```json2csv.coffee [input file.json] > [output file.csv]
+You can probably use this script for other JSON to CSV conversions as well, as long as they use the same structure as mongoexport created files. For instance, every document is listed on a different line, not as an element in a large array.
 
-Caveat: I'm not sure what happens when you have subdocuments consisting of arrays. In any case, there is no obvious way to shoehorn this type of structure into a sensible csv file anyway.
+The scripts are written in Coffeescript, any improvements are welcome!

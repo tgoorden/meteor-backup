@@ -4,7 +4,9 @@ meteor-backup
 Two simple scripts to make backups of collections on your remote meteor installation and to convert the result into csv. Since the Meteor provided hosting rotates the password to your MongoDB every few minutes, this beats having to do really annoying copy-paste operations.
 
 To install using npm:
-```sudo npm install -g meteor-db-utils
+```
+sudo npm install -g meteor-db-utils
+```
 (This is a global installation, which you probably want for a command line tool like this.)
 
 To export/backup JSON files for collections on your production site:
@@ -13,16 +15,21 @@ To export/backup JSON files for collections on your production site:
 meteor-backup [domain] [collection...]
 ```
 e.g.
-```meteor-backup examples.meteor.com users
-
+```
+meteor-backup examples.meteor.com users
+```
 You can list multiple collections, they will be exported to separate files.
 
 Options:
-```-d [dir]
+```
+-d [dir]
+```
 Specify the directory to save to.
 
-```--prefix [prefix]
-```--postfix [postfix]
+```
+--prefix [prefix]
+--postfix [postfix]
+```
 Append or prepend a string to your JSON filenames (the name of the collection is the base name). You can use this to datestamp your export for instance.
 
 
@@ -33,14 +40,20 @@ Keep in mind:
 It also includes a pretty cool script to convert the result to a CSV file.
 
 Usage of the conversion script:
-```meteor-json2csv <inputfile> [outputfile]
+```
+meteor-json2csv <inputfile> [outputfile]
+```
 
 Outputfile is optional, the script will write to the console if no outputfile is specified.
 
 This script will "flatten" any subdocuments. So, objects like:
-``` {"name":"Example","subdoc":{"amount":1,"description":"Foo"}}
+```
+{"name":"Example","subdoc":{"amount":1,"description":"Foo"}}
+```
 will be converted into
-``` {"name":"Example","subdoc_amount":1,"subdoc_description":"Foo"}}
+```
+{"name":"Example","subdoc_amount":1,"subdoc_description":"Foo"}}
+```
 before being converted into a CSV line.
 
 Arrays inside the JSON files  are currently not supported.

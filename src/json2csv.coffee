@@ -25,13 +25,22 @@ flatten = (root = "",obj)->
 	result = {}
 	_.each _.keys(obj), (key)->
 		value = obj[key]
-		if _.isObject value
-			# Recursively deconstruct the underlying object:
-			_.extend result, flatten(key, value)
+		# Since arrays are objects too, we deal with them first:
+		if _.isArray value
+			_.each value, (element,index)->
+				indexed_key = key + "_" + index
+				if _.isObject element
+					_.extend result, flatten(indexed_key, element)
+				else
+					result[indexed_key] = element
 		else
-			if root isnt ""
-				key = root + "_" + key
-			result[key] = value
+			if _.isObject value
+				# Recursively deconstruct the underlying object:
+				_.extend result, flatten(key, value)
+			else
+				if root isnt ""
+					key = root + "_" + key
+				result[key] = value
 	return result
 
 fs.readFile options.inputFile, {encoding:"UTF-8"}, (err,data)->
@@ -66,13 +75,17 @@ fs.readFile options.inputFile, {encoding:"UTF-8"}, (err,data)->
 			write _.map(unique_keys,(k)->"\"#{k}\"").join ","
 			# And.. the contents
 			_.each flat, (obj)->
-				csv = []
-				_.each unique_keys, (key)->
-					csv.push obj[key] || ""
-				# Put quotes around everything and escape quotes where necessary:
-				# Yes, quotes are escaped by a quote character!
-				padded = _.map csv,(v)->
-					escaped = v.replace /\"/g, "\"\""
-					return "\"#{escaped}\""
-				write padded.join ","
-
+				try
+					csv = []
+					_.each unique_keys, (key)->
+						csv.push obj[key] || ""
+					# Put quotes around everything and escape quotes in strings:
+					# Yes, quotes are escaped by a quote character!
+					padded = _.map csv,(v)->
+						if _.isString v
+							v = v.replace /\"/g, "\"\""
+						return "\"#{v}\""
+					write padded.join ","
+				catch error
+					console.log "Error processing: ",obj
+					throw error

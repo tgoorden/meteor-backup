@@ -46,11 +46,16 @@ exec "meteor mongo #{options.domain} --url", (error,stdout,stderr)->
 		host = url[3]
 		port = url[4]
 		db = url[5]
+		# pad the directory with a '/' if necessary:
+		dir = options.dir
+		if dir.charAt(dir.length-1) isnt '/'
+			dir = dir + '/'
 		_.each options.collections, (collection)->
-			exportCmd = "mongoexport -h #{host} --port #{port} -u #{username} -p #{password} -d #{db} -c #{collection} -o #{options.dir}#{options.prefix}#{collection}#{options.postfix}.json"
+			exportCmd = "mongoexport -h #{host} --port #{port} -u #{username} -p #{password} -d #{db} -c #{collection} -o #{dir}#{options.prefix}#{collection}#{options.postfix}.json"
 			console.log exportCmd
 			exec exportCmd, (err,sout,serr)->
 				if sout
 					console.log sout
 				if serr
+					console.log "An error occurred during export:"
 					console.log serr
